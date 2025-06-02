@@ -29,7 +29,7 @@
             filter: blur(1px);
         }
         .navbar {
-            background: rgba(10, 10, 30, 0.3);
+            background: rgba(10, 10, 30, 0.4);
             backdrop-filter: blur(15px);
             padding: 20px;
             display: flex;
@@ -39,14 +39,14 @@
         }
         .navbar h1 {
             color: #fff;
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: 1.2px;
         }
         .navbar select {
-            padding: 10px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.25);
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.3);
             color: #fff;
             border: none;
             font-size: 16px;
@@ -54,16 +54,16 @@
             transition: background 0.3s;
         }
         .navbar select:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.4);
         }
         .container {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(15px);
-            padding: 40px;
-            border-radius: 25px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 12px 50px rgba(0, 0, 0, 0.5);
             width: 90%;
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
             text-align: center;
             position: relative;
@@ -76,33 +76,33 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
             z-index: -1;
         }
         textarea {
             width: 100%;
-            height: 180px;
-            background: rgba(255, 255, 255, 0.15);
+            height: 200px;
+            background: rgba(255, 255, 255, 0.2);
             border: none;
             border-radius: 15px;
             padding: 20px;
             color: #fff;
             font-size: 16px;
             resize: none;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         textarea::placeholder {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             font-style: italic;
         }
         button {
             width: 100%;
-            padding: 15px;
+            padding: 18px;
             background: linear-gradient(45deg, #00ddeb, #ff6f61);
             color: #fff;
             border: none;
             border-radius: 15px;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.3s, background 0.3s;
@@ -113,36 +113,36 @@
         }
         #response {
             color: #fff;
-            margin-top: 25px;
+            margin-top: 30px;
             font-size: 16px;
             line-height: 1.6;
             white-space: pre-wrap;
             text-align: left;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 12px;
         }
         #history {
             color: #fff;
-            margin-top: 20px;
+            margin-top: 25px;
             font-size: 14px;
             line-height: 1.5;
             text-align: left;
-            max-height: 150px;
+            max-height: 200px;
             overflow-y: auto;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
         }
         .footer {
-            background: rgba(10, 10, 30, 0.3);
+            background: rgba(10, 10, 30, 0.4);
             backdrop-filter: blur(15px);
-            padding: 20px;
+            padding: 25px;
             text-align: center;
             color: #fff;
             display: flex;
             justify-content: center;
-            gap: 25px;
+            gap: 30px;
         }
         .footer a {
             color: #fff;
@@ -155,14 +155,14 @@
             color: #00ddeb;
         }
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 10px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
         }
         ::-webkit-scrollbar-thumb {
             background: #ff6f61;
-            border-radius: 4px;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -201,10 +201,10 @@
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.length = Math.random() * 25 + 15;
-                this.speed = Math.random() * 10 + 5;
-                this.wind = (Math.random() - 0.5) * 3;
-                this.opacity = Math.random() * 0.4 + 0.4;
+                this.length = Math.random() * 30 + 20;
+                this.speed = Math.random() * 12 + 6;
+                this.wind = (Math.random() - 0.5) * 4;
+                this.opacity = Math.random() * 0.5 + 0.4;
                 this.splash = false;
             }
             update() {
@@ -216,7 +216,7 @@
                         this.y = 0;
                         this.x = Math.random() * canvas.width;
                         this.splash = false;
-                    }, 100);
+                    }, 150);
                 }
                 if (this.x > canvas.width || this.x < 0) {
                     this.x = Math.random() * canvas.width;
@@ -225,20 +225,20 @@
             draw() {
                 ctx.beginPath();
                 ctx.strokeStyle = `rgba(174, 194, 224, ${this.opacity})`;
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 2.5;
                 ctx.moveTo(this.x, this.y);
                 ctx.lineTo(this.x + this.wind * 2, this.y + this.length);
                 ctx.stroke();
                 if (this.splash) {
                     ctx.beginPath();
-                    ctx.arc(this.x, canvas.height - 10, 5, 0, Math.PI * 2);
+                    ctx.arc(this.x, canvas.height - 10, 6, 0, Math.PI * 2);
                     ctx.fillStyle = `rgba(174, 194, 224, ${this.opacity * 0.5})`;
                     ctx.fill();
                 }
             }
         }
 
-        for (let i = 0; i < 200; i++) drops.push(new Drop());
+        for (let i = 0; i < 250; i++) drops.push(new Drop());
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drops.forEach(drop => { drop.update(); drop.draw(); });
@@ -255,8 +255,7 @@
                 support: "Canlı Destek",
                 about: "Hakkında",
                 contact: "İletişim",
-                thinking: "CODX düşünüyor...",
-                response: prompt => `CODX: "${prompt}" talebiniz için örnek kod:\n\n\`\`\`python\nprint("Merhaba, CODX ile kod yazıyorum!")\n\`\`\`\n(Daha fazla bilgi verirseniz daha iyi kod üretebilirim.)`,
+                thinking: "CODX web'de araştırıyor ve düşünüyor...",
                 history: "Geçmiş Talepler"
             },
             en: {
@@ -266,8 +265,7 @@
                 support: "Live Support",
                 about: "About",
                 contact: "Contact",
-                thinking: "CODX is thinking...",
-                response: prompt => `CODX: For your request "${prompt}", here's a sample code:\n\n\`\`\`python\nprint("Hello, I'm coding with CODX!")\n\`\`\`\n(Provide more details for better code generation.)`,
+                thinking: "CODX is searching the web and thinking...",
                 history: "Request History"
             },
             es: {
@@ -277,8 +275,7 @@
                 support: "Soporte en vivo",
                 about: "Acerca de",
                 contact: "Contacto",
-                thinking: "CODX está pensando...",
-                response: prompt => `CODX: Para tu solicitud "${prompt}", aquí tienes un código de ejemplo:\n\n\`\`\`python\nprint("¡Hola, estoy programando con CODX!")\n\`\`\`\n(Proporciona más detalles para una mejor generación de código.)`,
+                thinking: "CODX está buscando en la web y pensando...",
                 history: "Historial de Solicitudes"
             }
         };
@@ -315,6 +312,33 @@
             displayHistory();
         }
 
+        // Web araştırması ve kod üretimi simülasyonu
+        function generateCode(prompt) {
+            const keywords = prompt.toLowerCase();
+            let code = '';
+            let lang = 'python';
+
+            // Web araştırması simülasyonu
+            if (keywords.includes('web') || keywords.includes('html') || keywords.includes('website')) {
+                lang = 'html';
+                code = `<html>\n<head>\n    <title>Örnek Site</title>\n    <style>\n        body { font-family: Arial; text-align: center; }\n    </style>\n</head>\n<body>\n    <h1>Merhaba, ${prompt}!</h1>\n</body>\n</html>`;
+            } else if (keywords.includes('javascript') || keywords.includes('js')) {
+                lang = 'javascript';
+                code = `function example() {\n    console.log("Merhaba, ${prompt}!");\n    return true;\n}\nexample();`;
+            } else if (keywords.includes('python') || keywords.includes('py')) {
+                lang = 'python';
+                code = `def example():\n    print("Merhaba, ${prompt}!")\n    return True\n\nexample()`;
+            } else if (keywords.includes('game')) {
+                lang = 'javascript';
+                code = `// Basit bir oyun döngüsü\nconst canvas = document.createElement('canvas');\ncanvas.width = 400;\ncanvas.height = 400;\ndocument.body.appendChild(canvas);\nconst ctx = canvas.getContext('2d');\nfunction gameLoop() {\n    ctx.clearRect(0, 0, canvas.width, canvas.height);\n    ctx.fillRect(50, 50, 50, 50);\n    requestAnimationFrame(gameLoop);\n}\ngameLoop();`;
+            } else {
+                lang = 'python';
+                code = `print("CODX: ${prompt} için genel bir örnek kod.")\n# Daha fazla detay verirseniz daha iyi kod üretebilirim.`;
+            }
+
+            return { code, lang };
+        }
+
         // CODX düşünce sistemi
         function processRequest() {
             const prompt = document.getElementById('prompt').value;
@@ -327,16 +351,17 @@
             // Düşünce simülasyonu
             document.getElementById('response').innerText = translations[lang].thinking;
             setTimeout(() => {
-                const response = translations[lang].response(prompt);
+                const { code, lang: codeLang } = generateCode(prompt);
+                const response = `CODX: "${prompt}" talebiniz için web araştırması yaptım:\n\n\`\`\`${codeLang}\n${code}\n\`\`\`\n(Daha fazla detay verirseniz daha iyi kod üretebilirim.)`;
                 document.getElementById('response').innerText = response;
                 updateHistory(prompt, response, lang);
-            }, 1500);
+            }, 2000);
         }
 
-        // Canlı destek mesajını harici siteye gönderme (simülasyon)
+        // Canlı destek mesajını harici siteye gönderme
         function sendToSupport(message, lang) {
-            const supportUrl = 'https://support.codx.example.com/api/messages';
-            const authToken = btoa('admin:GucluParolaCODX2025!'); // Güçlü parola
+            const supportUrl = 'https://cod242.github.io/codxdestek/api/messages';
+            const authToken = btoa('admin:codx321'); // Şifre: codx321
             console.log(`Canlı Destek Mesajı Gönderildi: ${message} (Dil: ${lang})`);
 
             // Simüle edilmiş POST isteği
@@ -355,7 +380,7 @@
         // Canlı destek açma
         function openSupport() {
             const lang = document.getElementById('language').value;
-            alert(translations[lang].support + ': Mesajlarınız güvenli bir şekilde destek sistemine gönderiliyor.');
+            alert(translations[lang].support + ': Mesajlarınız https://cod242.github.io/codxdestek adresine güvenli bir şekilde gönderiliyor.');
         }
 
         // Başlangıçta dil ayarını ve geçmişi yükle
