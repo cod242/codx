@@ -1,391 +1,188 @@
+<!-- index.html + Flask backend birleştirilmiş hali -->
+<!-- Bu dosya Python olarak çalıştırılır: python app.py -->
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODX AI Kod Yazıcı</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        body {
-            overflow: hidden;
-            background: linear-gradient(135deg, #1a1a3d, #2a4066, #3d5b99);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 100vh;
-        }
-        #rainCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            filter: blur(1px);
-        }
-        .navbar {
-            background: rgba(10, 10, 30, 0.4);
-            backdrop-filter: blur(15px);
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        .navbar h1 {
-            color: #fff;
-            font-size: 30px;
-            font-weight: 700;
-            letter-spacing: 1.2px;
-        }
-        .navbar select {
-            padding: 12px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.3);
-            color: #fff;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .navbar select:hover {
-            background: rgba(255, 255, 255, 0.4);
-        }
-        .container {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(20px);
-            padding: 50px;
-            border-radius: 30px;
-            box-shadow: 0 12px 50px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 900px;
-            margin: auto;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
-            z-index: -1;
-        }
-        textarea {
-            width: 100%;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 15px;
-            padding: 20px;
-            color: #fff;
-            font-size: 16px;
-            resize: none;
-            margin-bottom: 25px;
-        }
-        textarea::placeholder {
-            color: rgba(255, 255, 255, 0.85);
-            font-style: italic;
-        }
-        button {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(45deg, #00ddeb, #ff6f61);
-            color: #fff;
-            border: none;
-            border-radius: 15px;
-            font-size: 20px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s, background 0.3s;
-        }
-        button:hover {
-            transform: scale(1.05);
-            background: linear-gradient(45deg, #00b7c2, #e55a50);
-        }
-        #response {
-            color: #fff;
-            margin-top: 30px;
-            font-size: 16px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            text-align: left;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            border-radius: 12px;
-        }
-        #history {
-            color: #fff;
-            margin-top: 25px;
-            font-size: 14px;
-            line-height: 1.5;
-            text-align: left;
-            max-height: 200px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 12px;
-        }
-        .footer {
-            background: rgba(10, 10, 30, 0.4);
-            backdrop-filter: blur(15px);
-            padding: 25px;
-            text-align: center;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-        }
-        .footer a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        .footer a:hover {
-            color: #00ddeb;
-        }
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.15);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ff6f61;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>2D → 3D Yapay Zeka</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      background: linear-gradient(to bottom, #f0f4ff, #ffffff);
+      animation: fadeIn 1s ease-in;
+    }
+
+    h1 {
+      color: #222;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      animation: slideDown 0.6s ease-out;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #fff;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      animation: scaleIn 0.5s ease;
+    }
+
+    input[type="file"] {
+      margin-bottom: 15px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #result {
+      margin-top: 40px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    model-viewer {
+      width: 400px;
+      height: 400px;
+      border-radius: 10px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+      transition: transform 0.5s;
+    }
+
+    model-viewer:hover {
+      transform: scale(1.02);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
 </head>
 <body>
-    <canvas id="rainCanvas"></canvas>
-    <div class="navbar">
-        <h1>CODX AI</h1>
-        <select id="language" onchange="changeLanguage()">
-            <option value="tr">Türkçe</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-        </select>
-    </div>
-    <div class="container">
-        <h2 id="title" style="color: #fff;">CODX ile Kod Yaz</h2>
-        <textarea id="prompt" placeholder="Kod talebinizi yazın..."></textarea>
-        <button onclick="processRequest()">Gönder</button>
-        <div id="history"></div>
-        <div id="response"></div>
-    </div>
-    <div class="footer">
-        <a href="#" onclick="openSupport()">Canlı Destek</a>
-        <a href="#">Hakkında</a>
-        <a href="#">İletişim</a>
-    </div>
 
-    <script>
-        // Yağmur efekti
-        const canvas = document.getElementById('rainCanvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const drops = [];
+  <h1>🧠 2D → 3D Dönüştürücü</h1>
 
-        class Drop {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.length = Math.random() * 30 + 20;
-                this.speed = Math.random() * 12 + 6;
-                this.wind = (Math.random() - 0.5) * 4;
-                this.opacity = Math.random() * 0.5 + 0.4;
-                this.splash = false;
-            }
-            update() {
-                this.y += this.speed;
-                this.x += this.wind;
-                if (this.y > canvas.height - 20) {
-                    this.splash = true;
-                    setTimeout(() => {
-                        this.y = 0;
-                        this.x = Math.random() * canvas.width;
-                        this.splash = false;
-                    }, 150);
-                }
-                if (this.x > canvas.width || this.x < 0) {
-                    this.x = Math.random() * canvas.width;
-                }
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.strokeStyle = `rgba(174, 194, 224, ${this.opacity})`;
-                ctx.lineWidth = 2.5;
-                ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.x + this.wind * 2, this.y + this.length);
-                ctx.stroke();
-                if (this.splash) {
-                    ctx.beginPath();
-                    ctx.arc(this.x, canvas.height - 10, 6, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(174, 194, 224, ${this.opacity * 0.5})`;
-                    ctx.fill();
-                }
-            }
-        }
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" required />
+    <button type="submit">📤 Yükle ve Dönüştür</button>
+  </form>
 
-        for (let i = 0; i < 250; i++) drops.push(new Drop());
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drops.forEach(drop => { drop.update(); drop.draw(); });
-            requestAnimationFrame(animate);
-        }
-        animate();
+  <div id="result" hidden>
+    <h3>✨ 3D Modeliniz:</h3>
+    <model-viewer 
+      src="" 
+      alt="Yapay zeka tarafından oluşturulan 3D model"
+      auto-rotate 
+      camera-controls 
+      background-color="#EEE">
+    </model-viewer>
+  </div>
 
-        // Dil çevirileri
-        const translations = {
-            tr: {
-                title: "CODX ile Kod Yaz",
-                placeholder: "Kod talebinizi yazın...",
-                button: "Gönder",
-                support: "Canlı Destek",
-                about: "Hakkında",
-                contact: "İletişim",
-                thinking: "CODX web'de araştırıyor ve düşünüyor...",
-                history: "Geçmiş Talepler"
-            },
-            en: {
-                title: "Code with CODX",
-                placeholder: "Enter your code request...",
-                button: "Submit",
-                support: "Live Support",
-                about: "About",
-                contact: "Contact",
-                thinking: "CODX is searching the web and thinking...",
-                history: "Request History"
-            },
-            es: {
-                title: "Crea código con CODX",
-                placeholder: "Ingresa tu solicitud de código...",
-                button: "Enviar",
-                support: "Soporte en vivo",
-                about: "Acerca de",
-                contact: "Contacto",
-                thinking: "CODX está buscando en la web y pensando...",
-                history: "Historial de Solicitudes"
-            }
-        };
+  <script>
+    const form = document.getElementById('uploadForm');
+    const resultDiv = document.getElementById('result');
+    const modelViewer = document.querySelector('model-viewer');
 
-        // Geçmiş konuşmaları tutma
-        let conversationHistory = JSON.parse(localStorage.getItem('codxHistory')) || [];
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
 
-        function updateHistory(prompt, response, lang) {
-            conversationHistory.push({ prompt, response, lang, timestamp: new Date().toLocaleString() });
-            localStorage.setItem('codxHistory', JSON.stringify(conversationHistory));
-            displayHistory();
-        }
+      const button = form.querySelector('button');
+      button.disabled = true;
+      button.textContent = '⏳ Dönüştürülüyor...';
 
-        function displayHistory() {
-            const lang = document.getElementById('language').value;
-            const historyDiv = document.getElementById('history');
-            historyDiv.innerHTML = `<strong>${translations[lang].history}</strong><br>`;
-            conversationHistory.forEach((entry, index) => {
-                historyDiv.innerHTML += `[${entry.timestamp}] ${entry.prompt} -> ${entry.response}<br>`;
-            });
-        }
+      try {
+        const response = await fetch('/predict', {
+          method: 'POST',
+          body: formData
+        });
 
-        // Dil değiştirme
-        function changeLanguage() {
-            const lang = document.getElementById('language').value;
-            document.getElementById('title').innerText = translations[lang].title;
-            document.getElementById('prompt').placeholder = translations[lang].placeholder;
-            document.getElementById('prompt').value = '';
-            document.getElementById('response').innerText = '';
-            document.querySelector('button').innerText = translations[lang].button;
-            document.querySelectorAll('.footer a')[0].innerText = translations[lang].support;
-            document.querySelectorAll('.footer a')[1].innerText = translations[lang].about;
-            document.querySelectorAll('.footer a')[2].innerText = translations[lang].contact;
-            displayHistory();
-        }
+        const data = await response.json();
+        modelViewer.src = data.model_url;
+        resultDiv.hidden = false;
+      } catch (err) {
+        alert("Hata oluştu: " + err.message);
+      } finally {
+        button.disabled = false;
+        button.textContent = '📤 Yükle ve Dönüştür';
+      }
+    });
+  </script>
 
-        // Web araştırması ve kod üretimi simülasyonu
-        function generateCode(prompt) {
-            const keywords = prompt.toLowerCase();
-            let code = '';
-            let lang = 'python';
-
-            // Web araştırması simülasyonu
-            if (keywords.includes('web') || keywords.includes('html') || keywords.includes('website')) {
-                lang = 'html';
-                code = `<html>\n<head>\n    <title>Örnek Site</title>\n    <style>\n        body { font-family: Arial; text-align: center; }\n    </style>\n</head>\n<body>\n    <h1>Merhaba, ${prompt}!</h1>\n</body>\n</html>`;
-            } else if (keywords.includes('javascript') || keywords.includes('js')) {
-                lang = 'javascript';
-                code = `function example() {\n    console.log("Merhaba, ${prompt}!");\n    return true;\n}\nexample();`;
-            } else if (keywords.includes('python') || keywords.includes('py')) {
-                lang = 'python';
-                code = `def example():\n    print("Merhaba, ${prompt}!")\n    return True\n\nexample()`;
-            } else if (keywords.includes('game')) {
-                lang = 'javascript';
-                code = `// Basit bir oyun döngüsü\nconst canvas = document.createElement('canvas');\ncanvas.width = 400;\ncanvas.height = 400;\ndocument.body.appendChild(canvas);\nconst ctx = canvas.getContext('2d');\nfunction gameLoop() {\n    ctx.clearRect(0, 0, canvas.width, canvas.height);\n    ctx.fillRect(50, 50, 50, 50);\n    requestAnimationFrame(gameLoop);\n}\ngameLoop();`;
-            } else {
-                lang = 'python';
-                code = `print("CODX: ${prompt} için genel bir örnek kod.")\n# Daha fazla detay verirseniz daha iyi kod üretebilirim.`;
-            }
-
-            return { code, lang };
-        }
-
-        // CODX düşünce sistemi
-        function processRequest() {
-            const prompt = document.getElementById('prompt').value;
-            const lang = document.getElementById('language').value;
-            if (!prompt) return;
-
-            // Canlı destek mesajını harici siteye gönder
-            sendToSupport(prompt, lang);
-
-            // Düşünce simülasyonu
-            document.getElementById('response').innerText = translations[lang].thinking;
-            setTimeout(() => {
-                const { code, lang: codeLang } = generateCode(prompt);
-                const response = `CODX: "${prompt}" talebiniz için web araştırması yaptım:\n\n\`\`\`${codeLang}\n${code}\n\`\`\`\n(Daha fazla detay verirseniz daha iyi kod üretebilirim.)`;
-                document.getElementById('response').innerText = response;
-                updateHistory(prompt, response, lang);
-            }, 2000);
-        }
-
-        // Canlı destek mesajını harici siteye gönderme
-        function sendToSupport(message, lang) {
-            const supportUrl = 'https://cod242.github.io/codxdestek/api/messages';
-            const authToken = btoa('admin:codx321'); // Şifre: codx321
-            console.log(`Canlı Destek Mesajı Gönderildi: ${message} (Dil: ${lang})`);
-
-            // Simüle edilmiş POST isteği
-            fetch(supportUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Basic ${authToken}`
-                },
-                body: JSON.stringify({ message, lang, timestamp: new Date().toISOString() })
-            })
-            .then(response => console.log('Mesaj destek sistemine gönderildi:', response))
-            .catch(error => console.error('Hata:', error));
-        }
-
-        // Canlı destek açma
-        function openSupport() {
-            const lang = document.getElementById('language').value;
-            alert(translations[lang].support + ': Mesajlarınız https://cod242.github.io/codxdestek adresine güvenli bir şekilde gönderiliyor.');
-        }
-
-        // Başlangıçta dil ayarını ve geçmişi yükle
-        changeLanguage();
-        displayHistory();
-    </script>
 </body>
 </html>
+
+<!-- Python Flask backend (app.py içeriği) -->
+
+<!-- Bu kod HTML'den ayrı .py dosyasında çalışmalıdır. İstersen hepsini birleştiririm. -->
+
+<!--
+from flask import Flask, request, jsonify, send_from_directory, render_template_string
+import os
+
+app = Flask(__name__)
+UPLOAD_FOLDER = 'uploads'
+STATIC_FOLDER = 'static'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(STATIC_FOLDER, exist_ok=True)
+
+@app.route('/')
+def index():
+    with open(__file__, 'r') as f:
+        html = f.read().split("<!-- Python Flask backend", 1)[0]  # HTML kısmını ayır
+    return render_template_string(html)
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    image = request.files.get('image')
+    if not image:
+        return jsonify({'error': 'Resim bulunamadı'}), 400
+
+    filename = image.filename
+    save_path = os.path.join(UPLOAD_FOLDER, filename)
+    image.save(save_path)
+
+    # Burada gerçek AI modeliyle 2D → 3D yapılabilir
+    # Şimdilik sabit dummy model döndürüyoruz
+    dummy_model = 'sample_model.glb'
+    return jsonify({'model_url': f'/static/{dummy_model}'})
+
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory(STATIC_FOLDER, filename)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+-->
+
+<!-- Not: static/sample_model.glb dosyasını manuel olarak koymalısın. -->
