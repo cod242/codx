@@ -1,225 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat Interface</title>
-    <style>
-        :root {
-            --primary: #10a37f;
-            --background: #343541;
-            --user-bg: #444654;
-            --bot-bg: #343541;
-            --text: #ffffff;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--background);
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        
-        #chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .message {
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            padding: 15px 20px;
-            border-radius: 8px;
-            line-height: 1.6;
-        }
-        
-        .bot-message {
-            background-color: var(--bot-bg);
-            align-self: flex-start;
-        }
-        
-        .user-message {
-            background-color: var(--user-bg);
-            align-self: flex-end;
-        }
-        
-        #input-container {
-            padding: 15px;
-            background-color: var(--background);
-            display: flex;
-            gap: 10px;
-            border-top: 1px solid #555;
-        }
-        
-        #user-input {
-            flex: 1;
-            padding: 12px 15px;
-            background-color: #40414f;
-            border: 1px solid #555;
-            border-radius: 6px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-        }
-        
-        #send-button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.2s;
-        }
-        
-        #send-button:hover {
-            background-color: #0d8a6d;
-        }
-        
-        .typing-indicator {
-            display: flex;
-            gap: 5px;
-            padding: 15px 20px;
-            background-color: var(--bot-bg);
-            border-radius: 8px;
-            align-self: flex-start;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-        }
-        
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #999;
-            border-radius: 50%;
-            animation: typingAnimation 1.4s infinite ease-in-out;
-        }
-        
-        @keyframes typingAnimation {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-5px); }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Yapay Zeka Sohbet</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 250px;
+      background: #1e1e2f;
+      color: white;
+      padding: 15px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    .sidebar h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .chat-list {
+      list-style: none;
+      padding: 0;
+    }
+    .chat-list li {
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f4f4f4;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      background: #fff;
+      border-top: 1px solid #ccc;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+    }
+    .chat-input button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .message {
+      margin-bottom: 15px;
+    }
+    .message.user {
+      text-align: right;
+      color: #007bff;
+    }
+    .message.ai {
+      text-align: left;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-    <div id="chat-container">
-        <div class="message bot-message">
-            Hello! I'm your AI assistant. How can I help you today?
-        </div>
-    </div>
-    
-    <div id="input-container">
-        <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
-        <button id="send-button">Send</button>
-    </div>
+  <div class="sidebar">
+    <h2>Sohbetler</h2>
+    <ul class="chat-list" id="chatList">
+      <li>Yeni Sohbet</li>
+    </ul>
+  </div>
 
-    <script>
-        const API_KEY = "d9eb40acc0cb4bd5aa21aec259253547";
-        const API_ENDPOINT = "https://api.deepseek.com/v1/chat/completions"; // Replace with actual endpoint
-        
-        const chatContainer = document.getElementById('chat-container');
-        const userInput = document.getElementById('user-input');
-        const sendButton = document.getElementById('send-button');
-        
-        async function sendMessage() {
-            const message = userInput.value.trim();
-            if (!message) return;
-            
-            // Add user message to chat
-            addMessage(message, 'user');
-            userInput.value = '';
-            
-            // Show typing indicator
-            showTypingIndicator();
-            
-            try {
-                const response = await fetch(API_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        model: "deepseek-chat",
-                        messages: [
-                            {
-                                role: "user",
-                                content: message
-                            }
-                        ],
-                        temperature: 0.7
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                const botReply = data.choices[0].message.content;
-                
-                // Add bot response to chat
-                hideTypingIndicator();
-                addMessage(botReply, 'bot');
-            } catch (error) {
-                hideTypingIndicator();
-                addMessage("Sorry, I encountered an error. Please try again.", 'bot');
-                console.error("API Error:", error);
-            }
-        }
-        
-        function addMessage(text, sender) {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message');
-            messageElement.classList.add(sender === 'bot' ? 'bot-message' : 'user-message');
-            messageElement.textContent = text;
-            
-            chatContainer.appendChild(messageElement);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-        
-        function showTypingIndicator() {
-            const typingElement = document.createElement('div');
-            typingElement.classList.add('typing-indicator');
-            typingElement.id = 'typing-indicator';
-            
-            for (let i = 0; i < 3; i++) {
-                const dot = document.createElement('div');
-                dot.classList.add('typing-dot');
-                typingElement.appendChild(dot);
-            }
-            
-            chatContainer.appendChild(typingElement);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-        
-        function hideTypingIndicator() {
-            const typingElement = document.getElementById('typing-indicator');
-            if (typingElement) typingElement.remove();
-        }
-        
-        // Event listeners
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-        
-        sendButton.addEventListener('click', sendMessage);
-        
-        // Focus input on load
-        window.addEventListener('load', () => {
-            userInput.focus();
-        });
-    </script>
+  <div class="chat-container">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Bir şey yaz..." />
+      <button onclick="sendMessage()">Gönder</button>
+    </div>
+  </div>
+
+  <script>
+    const apiKey = "5678mnopqrstuvwx5678mnopqrstuvwx5678mnop";
+    const messagesDiv = document.getElementById("chatMessages");
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      addMessage("user", text);
+      input.value = "";
+
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + apiKey
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: text }]
+        })
+      });
+
+      const data = await response.json();
+      const aiMessage = data.choices?.[0]?.message?.content;
+      if (aiMessage) {
+        addMessage("ai", aiMessage);
+      }
+    }
+
+    function addMessage(sender, text) {
+      const message = document.createElement("div");
+      message.className = `message ${sender}`;
+      message.textContent = text;
+      messagesDiv.appendChild(message);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+  </script>
 </body>
 </html>
